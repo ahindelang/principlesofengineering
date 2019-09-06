@@ -1,0 +1,162 @@
+
+// the setup function runs once when you press reset or power the board
+void setup() {
+  // initializing the digital pins 9-13 for our 5 LEDs.
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(12, OUTPUT);
+  pinMode(13, OUTPUT);
+  // initializing digital pin 8 for our button.
+  pinMode(8, INPUT);
+ 
+}
+//GLOBAL VARIABLES
+  int x = 0; // This is the variable controlled by our button.
+  unsigned long previousMillis1 = 0; // This is necessary for the timed codes.
+  const long interval = 1000 ; //This is also necessary for our timed codes.
+  long randNumber = -1; //This initializes the Randomizer variable at -1.
+
+// the loop function runs over and over again forever
+void loop() {
+
+  if(digitalRead(8) == HIGH){ //When button is pressed, x is counted up, which triggers "if" statements of each code.
+    x ++;
+    delay(250); //This delay accounts for the time it takes for a human to press and release the button--otherwise the button might increment more than once.
+      if(x > 4){ //The count is reset to 0.
+        x = 0;                      
+      }
+  }
+  if(x == 0){ //When x=0, which is the initial state, all LEDs are off.
+    digitalWrite(9, LOW);
+    digitalWrite(10, LOW);
+    digitalWrite(11, LOW);
+    digitalWrite(12, LOW);
+    digitalWrite(13, LOW);
+    }
+  if(x == 1){ //When x=1, all LEDs are on.
+    digitalWrite(9, HIGH);
+    digitalWrite(10, HIGH);
+    digitalWrite(11, HIGH);
+    digitalWrite(12, HIGH);
+    digitalWrite(13, HIGH);
+    }
+  if(x == 2) { //When x=2, LEDs run thru the strip, 1 second at a time, 1 LED at a time.
+     unsigned long currentMillis = millis(); // currentMillis reads the time, in milliseconds, since the code has been running.
+     if(currentMillis - previousMillis1 >= interval){ //If it has been 1 second, the code begins.
+      digitalWrite(9, HIGH);
+      digitalWrite(10, LOW);
+      digitalWrite(11, LOW);
+      digitalWrite(12, LOW);
+      digitalWrite(13, LOW);
+        if(currentMillis - previousMillis1 >= 2*interval){ //This is for 2 seconds. We nest the 'if' statements so that the code does not run more than one LED at a time.
+        digitalWrite(9, LOW);
+        digitalWrite(10, HIGH);
+          if(currentMillis - previousMillis1 >= 3*interval){
+          digitalWrite(10, LOW);
+          digitalWrite(11, HIGH);
+            if(currentMillis - previousMillis1 >= 4*interval){
+            digitalWrite(11, LOW);
+            digitalWrite(12, HIGH);
+              if(currentMillis - previousMillis1 >= 5*interval){
+              digitalWrite(12, LOW);
+              digitalWrite(13, HIGH);
+              previousMillis1 = currentMillis; //after the sequence, the previousMillis can be updated to currentMillis, allowing the cycle to repeat.           
+              }
+            }
+          }
+        }
+     }
+  }
+  if(x == 3){ //Selects a random LED and displays it for 1 second.
+       unsigned long currentMillis = millis(); //We once again need millis() so that we can display a different number each second.
+    if(randNumber == -1){ //This initial selection must be made within an 'if' statement so that it occurs after each LED has run. Otherwise it will run each millisecond.
+    digitalWrite(9,LOW);
+    digitalWrite(10, LOW);
+    digitalWrite(11, LOW);
+    digitalWrite(12, LOW);
+    digitalWrite(13, LOW);
+    randNumber = random(5); //Selects a random number from 0-4.
+    }
+    if(randNumber == 0) { //Random select 0 initializes the LED on pin 9.
+      digitalWrite(9,HIGH);
+      if(currentMillis - previousMillis1 >= interval) { //After 1 second, the LED is turned off.
+        digitalWrite(9,LOW);
+        previousMillis1 = currentMillis;
+        randNumber = -1; //Setting randNumber to -1 sends the code back to selecting a new random number.
+        }
+      }
+      if (randNumber == 1) {
+        digitalWrite(10,HIGH);
+        if(currentMillis - previousMillis1 >= interval) {
+          digitalWrite(10,LOW);
+          previousMillis1 = currentMillis;
+          randNumber = -1;
+          }
+      }
+      if(randNumber == 2){
+        digitalWrite(11,HIGH);
+        if(currentMillis - previousMillis1 >= interval) {
+          digitalWrite(11,LOW);
+          previousMillis1 = currentMillis;
+          randNumber = -1;
+          }
+        }
+      if(randNumber == 3){
+        digitalWrite(12,HIGH);
+        if(currentMillis-previousMillis1 >= interval){
+          digitalWrite(12,LOW);
+          previousMillis1 = currentMillis;
+          randNumber = -1;
+          }
+        }
+      if(randNumber == 4){
+        digitalWrite(13,HIGH);
+        if(currentMillis-previousMillis1 >= interval){
+          digitalWrite(13,LOW);
+          previousMillis1 = currentMillis;
+          randNumber = -1;
+          }
+        }
+  }
+  if(x == 4){ //'Bounces' back and forth between the sides.
+     unsigned long currentMillis = millis();
+     if(currentMillis - previousMillis1 >= interval/8){ //This sequence works similarly to the rolling cycle, but it is faster--hence interval/8--and 'bounces'.
+      digitalWrite(9, HIGH);
+      digitalWrite(10, LOW);
+      digitalWrite(11, LOW);
+      digitalWrite(12, LOW);
+      digitalWrite(13, LOW);
+        if(currentMillis - previousMillis1 >= 2*interval/8){
+        digitalWrite(9, LOW);
+        digitalWrite(10, HIGH);
+          if(currentMillis - previousMillis1 >= 3*interval/8){
+          digitalWrite(10, LOW);
+          digitalWrite(11, HIGH);
+            if(currentMillis - previousMillis1 >= 4*interval/8){
+            digitalWrite(11, LOW);
+            digitalWrite(12, HIGH);
+              if(currentMillis - previousMillis1 >= 5*interval/8){
+              digitalWrite(12, LOW);
+              digitalWrite(13, HIGH);
+                if(currentMillis - previousMillis1 >= 6*interval/8){ //Now it cycles back to the other side.
+                 digitalWrite(13, LOW);
+                 digitalWrite(12, HIGH);
+                 if(currentMillis - previousMillis1 >= 7*interval/8){
+                  digitalWrite(12, LOW);
+                  digitalWrite(11, HIGH);
+                    if(currentMillis - previousMillis1 >= 8*interval/8){
+                    digitalWrite(11, LOW);
+                    digitalWrite(10, HIGH);
+                    previousMillis1 = currentMillis; 
+                      }
+                    }
+                  }
+                }           
+              }
+            }
+          }
+        } //There is an abundance of 'if' statements to account for!
+     }
+  }
+ 
